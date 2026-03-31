@@ -221,31 +221,23 @@
 </section>
 
 <script>
-    // ВАЖНО: Замените на ваш URL из Google Apps Script
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz08kVTXUixItvGAraEsp9xPeNd1-fKn5siVdi0IdjguTU9bWObRSQxa3iZxgUQ5d1i/exec';
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxuTcaZvd10bb3QrlbXOonkxX28dc5wIqw3o_2mSxUnJtcBfJNQuE0PGI3yiifNYpwm/exec';
     
     async function sendToTelegram(event) {
         event.preventDefault();
         
-        // Проверяем, что все элементы существуют
-        const nameInput = document.getElementById('name');
-        const presenceSelect = document.getElementById('presence');
-        const phoneInput = document.getElementById('number1');
-        const coupleTextarea = document.getElementById('couple');
-        const messageTextarea = document.getElementById('message');
+        // Показываем индикатор загрузки
+        const submitBtn = document.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Отправка...';
+        submitBtn.disabled = true;
         
-        // Проверка на существование элементов
-        if (!nameInput || !presenceSelect || !phoneInput || !coupleTextarea || !messageTextarea) {
-            console.error('Не найдены элементы формы!');
-            alert('Ошибка: не все поля формы найдены. Пожалуйста, обновите страницу.');
-            return;
-        }
-        
-        const name = nameInput.value;
-        const presence = presenceSelect.value;
-        const phone = phoneInput.value;
-        const couple = coupleTextarea.value;
-        const comments = messageTextarea.value;
+        // Собираем данные формы
+        const name = document.getElementById('name').value;
+        const presence = document.getElementById('presence').value;
+        const phone = document.getElementById('number1').value;
+        const couple = document.getElementById('couple').value;
+        const comments = document.getElementById('message').value;
         
         const drinkCheckboxes = document.querySelectorAll('input[name="drinks[]"]:checked');
         const drinks = Array.from(drinkCheckboxes).map(cb => cb.value).join(', ');
@@ -259,29 +251,55 @@
 *Напитки:* ${drinks || 'Не указано'}
 *Комментарии:* ${comments || 'Нет комментариев'}`;
         
-        try {
-            console.log('Отправка данных...');
+        // Создаем уникальное имя для callback функции
+        const callbackName = 'callback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        
+        // Создаем Promise, который будет ждать ответа
+        const result = await new Promise((resolve, reject) => {
+            // Создаем временную callback функцию
+            window[callbackName] = function(response) {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                if (response.success) {
+                    resolve(response);
+                } else {
+                    reject(new Error(response.error || 'Ошибка отправки'));
+                }
+            };
             
-            const response = await fetch(APPS_SCRIPT_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ message })
-            });
+            // Создаем script тег для JSONP запроса
+            const script = document.createElement('script');
+            const url = `${APPS_SCRIPT_URL}?message=${encodeURIComponent(message)}&callback=${callbackName}`;
+            script.src = url;
             
-            const result = await response.json();
-            console.log('Ответ сервера:', result);
+            // Таймаут на случай ошибки сети
+            const timeout = setTimeout(() => {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                reject(new Error('Превышено время ожидания ответа'));
+            }, 10000);
             
-            if (result.success) {
-                alert('Спасибо! Ваш ответ отправлен.');
-                document.getElementById('rsvpForm').reset();
-            } else {
-                throw new Error(result.error || 'Ошибка отправки');
-            }
-        } catch (error) {
-            console.error('Ошибка:', error);
-            alert('Ошибка отправки. Пожалуйста, свяжитесь с нами напрямую по телефону: +79960092385');
+            // Удаляем таймаут после загрузки
+            script.onload = () => clearTimeout(timeout);
+            script.onerror = () => {
+                clearTimeout(timeout);
+                delete window[callbackName];
+                document.body.removeChild(script);
+                reject(new Error('Сетевая ошибка'));
+            };
+            
+            document.body.appendChild(script);
+        });
+        
+        // Восстанавливаем кнопку
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+        
+        if (result.success) {
+            alert('Спасибо! Ваш ответ отправлен.');
+            document.getElementById('rsvpForm').reset();
+        } else {
+            throw new Error(result.error);
         }
     }
 </script>
