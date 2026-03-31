@@ -62,11 +62,16 @@ p {
 }
 
 .imagess {
-    max-width: 27%;
+    
+    max-width: 30%;
     height: auto;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: space-evenly;
 }
 .imagess img{
-    max-width: 50%;
+    max-width: 60%;
     height: auto;
     min-width: 60px;
 }
