@@ -153,120 +153,138 @@
         </section>
 
         <!-- ФОРМА -->
-        <section >
-            <h3>С нетерпением ждем вас!</h3>
-            <div class="formm1">
-                <form onsubmit="sendToTelegram(event)" class="formm2" id="rsvpForm">
-                    
-                    <div class="form-group">
-                        <label for="name"><p>Ваше имя и фамилия</p></label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
+<section>
+    <h3>С нетерпением ждем вас!</h3>
+    <div class="formm1">
+        <form onsubmit="sendToTelegram(event)" class="formm2" id="rsvpForm">
+            
+            <div class="form-group">
+                <label for="name"><p>Ваше имя и фамилия</p></label>
+                <input type="text" id="name" name="name" required>
+            </div>
 
-                    <div class="form-group">
-                        <label for="yesorno"><p>Планируете ли присутствовать?</p></label>
-                        <select class="f-goption" id="presence">
-                            <option value="1">Да, с удовольствием!</option>
-                            <option value="2">Не получается</option>
-                        </select>
-                    </div>
+            <div class="form-group">
+                <label for="yesorno"><p>Планируете ли присутствовать?</p></label>
+                <select class="f-goption" id="presence">
+                    <option value="1">Да, с удовольствием!</option>
+                    <option value="2">Не получается</option>
+                </select>
+            </div>
 
-                    <div class="form-group">
-                        <label for="number1"><p>Телефон</p></label>
-                        <input type="number" id="number1" name="number1" required>
-                    </div>
+            <div class="form-group">
+                <label for="number1"><p>Телефон</p></label>
+                <input type="tel" id="number1" name="number1" required>
+            </div>
 
-                    <div class="form-group">
-                        <label for="couple"><p>Я буду с парой(имя, фамилия)</p></label>
-                        <textarea id="couple" name="couple" rows="3"></textarea>
-                    </div>
+            <div class="form-group">
+                <label for="couple"><p>Я буду с парой(имя, фамилия)</p></label>
+                <textarea id="couple" name="couple" rows="3"></textarea>
+            </div>
 
-                    <div class="form-group">
-                        <label ><p>Буду пить</p></label>
-                        
-                        <div class = "checkbox">
-                            <input type="checkbox" id="vodka" name="drinks[]" value="vodka" >
-                            <label for="vodka">Водка</label>
-                        </div>
-
-                        <div class = "checkbox">
-                            <input type="checkbox" id="samogon" name="drinks[]" value="samogon">
-                            <label for="samogon">Самогон</label>
-                        </div>
-                        
-                        <div class = "checkbox">
-                            <input type="checkbox" id="red_wine" name="drinks[]" value="red_wine">
-                            <label for="red_wine">Вино красное</label>
-                        </div>
-
-                        <div class = "checkbox">
-                            <input type="checkbox" id="white_wine" name="drinks[]" value="white_wine">
-                            <label for="white_wine">Вино белое</label>
-                        </div>
-
-                        <div class = "checkbox">
-                            <input type="checkbox" id="not_drink" name="drinks[]" value="not_drink">
-                            <label for="not_drink">Не буду пить</label>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="message"><p>Комментарии</p></label>
-                        <textarea id="message" name="message" rows="4"></textarea>
-                    </div>
+            <div class="form-group">
+                <label><p>Буду пить</p></label>
                 
-                    <button type="submit">Отправить</button>
-                </form>
+                <div class="checkbox">
+                    <input type="checkbox" id="vodka" name="drinks[]" value="Водка">
+                    <label for="vodka">Водка</label>
+                </div>
 
-                <script>
-                    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxVG7heh7daGtqXD6Q8wLUIbtFKOiRzK5LCac1F_RvTgNOymmReiAaRWdB9K0NfsvXK/exec';
-                    
-                    async function sendToTelegram(event) {
-                        event.preventDefault();
-                        
-                        const name = document.getElementById('name').value;
-                        const presence = document.getElementById('presence').value;
-                        const phone = document.getElementById('number1').value;
-                        const couple = document.getElementById('couple').value;
-                        const comments = document.getElementById('message').value;
-                        
-                        const drinkCheckboxes = document.querySelectorAll('input[name="drinks[]"]:checked');
-                        const drinks = Array.from(drinkCheckboxes).map(cb => cb.value).join(', ');
-                        
-                        const message = `🎉 *Новый ответ на свадебное приглашение!*
+                <div class="checkbox">
+                    <input type="checkbox" id="samogon" name="drinks[]" value="Самогон">
+                    <label for="samogon">Самогон</label>
+                </div>
+                
+                <div class="checkbox">
+                    <input type="checkbox" id="red_wine" name="drinks[]" value="Вино красное">
+                    <label for="red_wine">Вино красное</label>
+                </div>
 
-                        *Имя:* ${name}
-                        *Присутствие:* ${presence === '1' ? 'Да, с удовольствием!' : 'Не получается'}
-                        *Телефон:* ${phone}
-                        *Пара:* ${couple || 'Не указано'}
-                        *Напитки:* ${drinks || 'Не указано'}
-                        *Комментарии:* ${comments || 'Нет комментариев'}`;
-                        
-                        try {
-                            const response = await fetch(APPS_SCRIPT_URL, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({ message })
-                            });
-                            
-                            const result = await response.json();
-                            
-                            if (result.success) {
-                                alert('Спасибо! Ваш ответ отправлен.');
-                                document.getElementById('rsvpForm').reset();
-                            } else {
-                                throw new Error(result.error || 'Ошибка отправки');
-                            }
-                        } catch (error) {
-                            console.error('Ошибка:', error);
-                            alert('Ошибка отправки. Пожалуйста, свяжитесь с нами напрямую по телефону: +79960092385');
-                        }
-                    }
-                    
-                    document.getElementById('rsvpForm').addEventListener('submit', sendToTelegram);
-                </script>
+                <div class="checkbox">
+                    <input type="checkbox" id="white_wine" name="drinks[]" value="Вино белое">
+                    <label for="white_wine">Вино белое</label>
+                </div>
+
+                <div class="checkbox">
+                    <input type="checkbox" id="not_drink" name="drinks[]" value="Не буду пить">
+                    <label for="not_drink">Не буду пить</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="message"><p>Комментарии</p></label>
+                <textarea id="message" name="message" rows="4"></textarea>
+            </div>
+        
+            <button type="submit">Отправить</button>
+        </form>
+    </div>
+</section>
+
+<script>
+    // ВАЖНО: Замените на ваш URL из Google Apps Script
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbKQXAL7_fG5gJw6qQdp3TJanPOH_DVB1usR9IT40kiEa1SI7IFbvx-xSqxfEIyDJY/exec';
+    
+    async function sendToTelegram(event) {
+        event.preventDefault();
+        
+        // Проверяем, что все элементы существуют
+        const nameInput = document.getElementById('name');
+        const presenceSelect = document.getElementById('presence');
+        const phoneInput = document.getElementById('number1');
+        const coupleTextarea = document.getElementById('couple');
+        const messageTextarea = document.getElementById('message');
+        
+        // Проверка на существование элементов
+        if (!nameInput || !presenceSelect || !phoneInput || !coupleTextarea || !messageTextarea) {
+            console.error('Не найдены элементы формы!');
+            alert('Ошибка: не все поля формы найдены. Пожалуйста, обновите страницу.');
+            return;
+        }
+        
+        const name = nameInput.value;
+        const presence = presenceSelect.value;
+        const phone = phoneInput.value;
+        const couple = coupleTextarea.value;
+        const comments = messageTextarea.value;
+        
+        const drinkCheckboxes = document.querySelectorAll('input[name="drinks[]"]:checked');
+        const drinks = Array.from(drinkCheckboxes).map(cb => cb.value).join(', ');
+        
+        const message = `🎉 *Новый ответ на свадебное приглашение!*
+
+*Имя:* ${name}
+*Присутствие:* ${presence === '1' ? 'Да, с удовольствием!' : 'Не получается'}
+*Телефон:* ${phone}
+*Пара:* ${couple || 'Не указано'}
+*Напитки:* ${drinks || 'Не указано'}
+*Комментарии:* ${comments || 'Нет комментариев'}`;
+        
+        try {
+            console.log('Отправка данных...');
+            
+            const response = await fetch(APPS_SCRIPT_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message })
+            });
+            
+            const result = await response.json();
+            console.log('Ответ сервера:', result);
+            
+            if (result.success) {
+                alert('Спасибо! Ваш ответ отправлен.');
+                document.getElementById('rsvpForm').reset();
+            } else {
+                throw new Error(result.error || 'Ошибка отправки');
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Ошибка отправки. Пожалуйста, свяжитесь с нами напрямую по телефону: +79960092385');
+        }
+    }
+</script>
 
         <section>
             <div class="appearing-text">                
