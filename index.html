@@ -153,156 +153,147 @@
         </section>
 
         <!-- ФОРМА -->
-<section>
-    <h3>С нетерпением ждем вас!</h3>
-    <div class="formm1">
-        <form onsubmit="sendToTelegram(event)" class="formm2" id="rsvpForm">
+        <section>
+            <h3>С нетерпением ждем вас!</h3>
+            <div class="formm1">
+                <form onsubmit="sendToTelegram(event)" class="formm2" id="rsvpForm">
+                    
+                    <div class="form-group">
+                        <label for="name"><p>Ваше имя и фамилия</p></label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+        
+                    <div class="form-group">
+                        <label for="yesorno"><p>Планируете ли присутствовать?</p></label>
+                        <select class="f-goption" id="presence">
+                            <option value="1">Да, с удовольствием!</option>
+                            <option value="2">Не получается</option>
+                        </select>
+                    </div>
+        
+                    <div class="form-group">
+                        <label for="number1"><p>Телефон</p></label>
+                        <input type="tel" id="number1" name="number1" required>
+                    </div>
+        
+                    <div class="form-group">
+                        <label for="couple"><p>Я буду с парой(имя, фамилия)</p></label>
+                        <textarea id="couple" name="couple" rows="3"></textarea>
+                    </div>
+        
+                    <div class="form-group">
+                        <label><p>Буду пить</p></label>
+                        
+                        <div class="checkbox">
+                            <input type="checkbox" id="vodka" name="drinks[]" value="Водка">
+                            <label for="vodka">Водка</label>
+                        </div>
+        
+                        <div class="checkbox">
+                            <input type="checkbox" id="samogon" name="drinks[]" value="Самогон">
+                            <label for="samogon">Самогон</label>
+                        </div>
+                        
+                        <div class="checkbox">
+                            <input type="checkbox" id="red_wine" name="drinks[]" value="Вино красное">
+                            <label for="red_wine">Вино красное</label>
+                        </div>
+        
+                        <div class="checkbox">
+                            <input type="checkbox" id="white_wine" name="drinks[]" value="Вино белое">
+                            <label for="white_wine">Вино белое</label>
+                        </div>
+        
+                        <div class="checkbox">
+                            <input type="checkbox" id="not_drink" name="drinks[]" value="Не буду пить">
+                            <label for="not_drink">Не буду пить</label>
+                        </div>
+                    </div>
+        
+                    <div class="form-group">
+                        <label for="message"><p>Комментарии</p></label>
+                        <textarea id="message" name="message" rows="4"></textarea>
+                    </div>
+                
+                    <button type="submit">Отправить</button>
+                </form>
+            </div>
+        </section>
+
+        <script>
+            const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw_QLIaXKQ4igbv1IFZg4XSjiHbGWk4ezhzg8payU43LrFByjYJDGjk9BdNAMUXpd0_/exec';
             
-            <div class="form-group">
-                <label for="name"><p>Ваше имя и фамилия</p></label>
-                <input type="text" id="name" name="name" required>
-            </div>
-
-            <div class="form-group">
-                <label for="yesorno"><p>Планируете ли присутствовать?</p></label>
-                <select class="f-goption" id="presence">
-                    <option value="1">Да, с удовольствием!</option>
-                    <option value="2">Не получается</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="number1"><p>Телефон</p></label>
-                <input type="tel" id="number1" name="number1" required>
-            </div>
-
-            <div class="form-group">
-                <label for="couple"><p>Я буду с парой(имя, фамилия)</p></label>
-                <textarea id="couple" name="couple" rows="3"></textarea>
-            </div>
-
-            <div class="form-group">
-                <label><p>Буду пить</p></label>
+            async function sendToTelegram(event) {
+                event.preventDefault();
                 
-                <div class="checkbox">
-                    <input type="checkbox" id="vodka" name="drinks[]" value="Водка">
-                    <label for="vodka">Водка</label>
-                </div>
-
-                <div class="checkbox">
-                    <input type="checkbox" id="samogon" name="drinks[]" value="Самогон">
-                    <label for="samogon">Самогон</label>
-                </div>
+                const submitBtn = document.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Отправка...';
+                submitBtn.disabled = true;
                 
-                <div class="checkbox">
-                    <input type="checkbox" id="red_wine" name="drinks[]" value="Вино красное">
-                    <label for="red_wine">Вино красное</label>
-                </div>
-
-                <div class="checkbox">
-                    <input type="checkbox" id="white_wine" name="drinks[]" value="Вино белое">
-                    <label for="white_wine">Вино белое</label>
-                </div>
-
-                <div class="checkbox">
-                    <input type="checkbox" id="not_drink" name="drinks[]" value="Не буду пить">
-                    <label for="not_drink">Не буду пить</label>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="message"><p>Комментарии</p></label>
-                <textarea id="message" name="message" rows="4"></textarea>
-            </div>
+                const name = document.getElementById('name').value;
+                const presence = document.getElementById('presence').value;
+                const phone = document.getElementById('number1').value;
+                const couple = document.getElementById('couple').value;
+                const comments = document.getElementById('message').value;
+                
+                const drinkCheckboxes = document.querySelectorAll('input[name="drinks[]"]:checked');
+                const drinks = Array.from(drinkCheckboxes).map(cb => cb.value).join(', ');
+                
+                const message = `🎉 *Новый ответ на свадебное приглашение!*
         
-            <button type="submit">Отправить</button>
-        </form>
-    </div>
-</section>
-
-<script>
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxP9neAdTB8AArhQLM62mlw50zOWosuLxJwk15omwR-TvD9ztN6Jqj4JQHHN6ULKF_d/exec';
-    
-    async function sendToTelegram(event) {
-        event.preventDefault();
-        
-        // Показываем индикатор загрузки
-        const submitBtn = document.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = 'Отправка...';
-        submitBtn.disabled = true;
-        
-        // Собираем данные формы
-        const name = document.getElementById('name').value;
-        const presence = document.getElementById('presence').value;
-        const phone = document.getElementById('number1').value;
-        const couple = document.getElementById('couple').value;
-        const comments = document.getElementById('message').value;
-        
-        const drinkCheckboxes = document.querySelectorAll('input[name="drinks[]"]:checked');
-        const drinks = Array.from(drinkCheckboxes).map(cb => cb.value).join(', ');
-        
-        const message = `🎉 *Новый ответ на свадебное приглашение!*
-
-*Имя:* ${name}
-*Присутствие:* ${presence === '1' ? 'Да, с удовольствием!' : 'Не получается'}
-*Телефон:* ${phone}
-*Пара:* ${couple || 'Не указано'}
-*Напитки:* ${drinks || 'Не указано'}
-*Комментарии:* ${comments || 'Нет комментариев'}`;
-        
-        // Создаем уникальное имя для callback функции
-        const callbackName = 'callback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        
-        // Создаем Promise, который будет ждать ответа
-        const result = await new Promise((resolve, reject) => {
-            // Создаем временную callback функцию
-            window[callbackName] = function(response) {
-                delete window[callbackName];
-                document.body.removeChild(script);
-                if (response.success) {
-                    resolve(response);
+                *Имя:* ${name}
+                *Присутствие:* ${presence === '1' ? 'Да, с удовольствием!' : 'Не получается'}
+                *Телефон:* ${phone}
+                *Пара:* ${couple || 'Не указано'}
+                *Напитки:* ${drinks || 'Не указано'}
+                *Комментарии:* ${comments || 'Нет комментариев'}`;
+                
+                const callbackName = 'callback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                
+                const result = await new Promise((resolve, reject) => {
+                    window[callbackName] = function(response) {
+                        delete window[callbackName];
+                        document.body.removeChild(script);
+                        if (response.success) {
+                            resolve(response);
+                        } else {
+                            reject(new Error(response.error || 'Ошибка отправки'));
+                        }
+                    };
+                    
+                    const script = document.createElement('script');
+                    const url = `${APPS_SCRIPT_URL}?message=${encodeURIComponent(message)}&callback=${callbackName}`;
+                    script.src = url;
+                    
+                    const timeout = setTimeout(() => {
+                        delete window[callbackName];
+                        document.body.removeChild(script);
+                        reject(new Error('Превышено время ожидания ответа'));
+                    }, 10000);
+                    
+                    script.onload = () => clearTimeout(timeout);
+                    script.onerror = () => {
+                        clearTimeout(timeout);
+                        delete window[callbackName];
+                        document.body.removeChild(script);
+                        reject(new Error('Сетевая ошибка'));
+                    };
+                    
+                    document.body.appendChild(script);
+                });
+                
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                
+                if (result.success) {
+                    alert('Спасибо! Ваш ответ отправлен.');
+                    document.getElementById('rsvpForm').reset();
                 } else {
-                    reject(new Error(response.error || 'Ошибка отправки'));
+                    throw new Error(result.error);
                 }
-            };
-            
-            // Создаем script тег для JSONP запроса
-            const script = document.createElement('script');
-            const url = `${APPS_SCRIPT_URL}?message=${encodeURIComponent(message)}&callback=${callbackName}`;
-            script.src = url;
-            
-            // Таймаут на случай ошибки сети
-            const timeout = setTimeout(() => {
-                delete window[callbackName];
-                document.body.removeChild(script);
-                reject(new Error('Превышено время ожидания ответа'));
-            }, 10000);
-            
-            // Удаляем таймаут после загрузки
-            script.onload = () => clearTimeout(timeout);
-            script.onerror = () => {
-                clearTimeout(timeout);
-                delete window[callbackName];
-                document.body.removeChild(script);
-                reject(new Error('Сетевая ошибка'));
-            };
-            
-            document.body.appendChild(script);
-        });
-        
-        // Восстанавливаем кнопку
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-        
-        if (result.success) {
-            alert('Спасибо! Ваш ответ отправлен.');
-            document.getElementById('rsvpForm').reset();
-        } else {
-            throw new Error(result.error);
-        }
-    }
-</script>
+            }
+        </script>
 
         <section>
             <div class="appearing-text">                
