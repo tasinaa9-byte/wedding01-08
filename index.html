@@ -156,7 +156,7 @@
         <section >
             <h3>С нетерпением ждем вас!</h3>
             <div class="formm1">
-                <form onsubmit="sendToTelegram(event)" class="formm2">
+                <form onsubmit="sendToTelegram(event)" class="formm2" id="rsvpForm">
                     
                     <div class="form-group">
                         <label for="name"><p>Ваше имя и фамилия</p></label>
@@ -165,7 +165,7 @@
 
                     <div class="form-group">
                         <label for="yesorno"><p>Планируете ли присутствовать?</p></label>
-                        <select class="f-goption">
+                        <select class="f-goption" id="presence">
                             <option value="1">Да, с удовольствием!</option>
                             <option value="2">Не получается</option>
                         </select>
