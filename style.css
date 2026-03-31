@@ -465,6 +465,18 @@ button:hover {
     background: #ff058f;
 }
 
+.appearing-text02 {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 2.5s ease;
+    padding: 20px;
+}
+
+.appearing-text02.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .appearing-text {
     opacity: 0;
     transform: translateY(50px);
