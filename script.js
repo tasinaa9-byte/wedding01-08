@@ -110,12 +110,29 @@ function initScrollAnimations() {
     window.addEventListener('scroll', checkVisibility);
 }
 
+function initScrollAnimations02() {
+    const elements = document.querySelectorAll('.appearing-text02');
+    
+    function checkVisibility() {
+        elements.forEach(element => {
+            const elementTop = element.getBoundingClientRect().top;
+            if (elementTop < window.innerHeight - 100) {
+                element.classList.add('visible');
+            }
+        });
+    }
+    
+    checkVisibility();
+    window.addEventListener('scroll', checkVisibility);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     createCalendar();
     initAccordion();
     window.addEventListener('resize', function() {
     });
     initScrollAnimations();
+    initScrollAnimations02();
 });
 
 
