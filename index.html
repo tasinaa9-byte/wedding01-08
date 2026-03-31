@@ -145,7 +145,7 @@
                 <p>Как добраться <br>Пожалуйста используйте карту <br> для перехода в  навигатор,<br> чтобы добраться до местоположения</p>
                 <div>
                     <div class = "kart">
-                        <script type="text/javascript" charset="utf-8" async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A1318f30bcbcd773dde23a96da5a616379929b7965e433d1e23764cb00be00b0c&amp;width=80%&amp;height=300&amp;lang=ru_RU&amp;scroll=true"></script>
+                        <script type="text/javascript" charset="utf-8" async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A1318f30bcbcd773dde23a96da5a616379929b7965e433d1e23764cb00be00b0c&amp;width=70%&amp;height=300&amp;lang=ru_RU&amp;scroll=true"></script>
                     </div>
                 </div>
             </div>
@@ -183,11 +183,12 @@
 
                     <div class="form-group">
                         <label ><p>Буду пить</p></label>
+                        
                         <div class = "checkbox">
                             <input type="checkbox" id="vodka" name="drinks[]" value="vodka" >
                             <label for="vodka">Водка</label>
                         </div>
-                        
+
                         <div class = "checkbox">
                             <input type="checkbox" id="samogon" name="drinks[]" value="samogon">
                             <label for="samogon">Самогон</label>
@@ -218,11 +219,13 @@
                 </form>
 
                 <script>
+                    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbKQXAL7_fG5gJw6qQdp3TJanPOH_DVB1usR9IT40kiEa1SI7IFbvx-xSqxfEIyDJY/exec';
+                    
                     async function sendToTelegram(event) {
                         event.preventDefault();
                         
                         const name = document.getElementById('name').value;
-                        const presence = document.querySelector('.f-goption').value;
+                        const presence = document.getElementById('presence').value;
                         const phone = document.getElementById('number1').value;
                         const couple = document.getElementById('couple').value;
                         const comments = document.getElementById('message').value;
@@ -230,50 +233,40 @@
                         const drinkCheckboxes = document.querySelectorAll('input[name="drinks[]"]:checked');
                         const drinks = Array.from(drinkCheckboxes).map(cb => cb.value).join(', ');
                         
-                        const message = `
-                    🎉 *Новый ответ на свадебное приглашение!*
+                        const message = `🎉 *Новый ответ на свадебное приглашение!*
 
-                    *Имя:* ${name}
-                    *Присутствие:* ${presence === '1' ? 'Да, с удовольствием!' : 'Не получается'}
-                    *Телефон:* ${phone}
-                    *Пара:* ${couple || 'Не указано'}
-                    *Напитки:* ${drinks || 'Не указано'}
-                    *Комментарии:* ${comments || 'Нет комментариев'}
-                        `;
-                        
-                        const botToken = '';
-                        const chatId = ''; 
+                        *Имя:* ${name}
+                        *Присутствие:* ${presence === '1' ? 'Да, с удовольствием!' : 'Не получается'}
+                        *Телефон:* ${phone}
+                        *Пара:* ${couple || 'Не указано'}
+                        *Напитки:* ${drinks || 'Не указано'}
+                        *Комментарии:* ${comments || 'Нет комментариев'}`;
                         
                         try {
-                            const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                            const response = await fetch(APPS_SCRIPT_URL, {
                                 method: 'POST',
-                                headers: {'Content-Type': 'application/json'},
-                                body: JSON.stringify({
-                                    chat_id: chatId,
-                                    text: message,
-                                    parse_mode: 'Markdown'
-                                })
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ message })
                             });
                             
                             const result = await response.json();
                             
-                            if (result.ok) {
+                            if (result.success) {
                                 alert('Спасибо! Ваш ответ отправлен.');
-                                event.target.reset(); 
+                                document.getElementById('rsvpForm').reset();
                             } else {
-                                console.error('Ошибка Telegram:', result);
-                                alert('Ошибка отправки: ' + (result.description || 'Неизвестная ошибка'));
+                                throw new Error(result.error || 'Ошибка отправки');
                             }
                         } catch (error) {
                             console.error('Ошибка:', error);
-                            alert('Ошибка отправки. Пожалуйста, свяжитесь с нами напрямую.');
+                            alert('Ошибка отправки. Пожалуйста, свяжитесь с нами напрямую по телефону: +79960092385');
                         }
                     }
+                    
+                    document.getElementById('rsvpForm').addEventListener('submit', sendToTelegram);
                 </script>
-                                           
-
-            </div>
-        </section>
 
         <section>
             <div class="appearing-text">                
