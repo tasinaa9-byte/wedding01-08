@@ -63,7 +63,7 @@ p {
 
 .imagess {
     
-    max-width: 30%;
+    max-width: 40%;
     height: auto;
     display: flex;
     align-items: flex-start;
@@ -71,7 +71,7 @@ p {
     justify-content: space-evenly;
 }
 .imagess img{
-    max-width: 60%;
+    max-width: 70%;
     height: auto;
     min-width: 60px;
 }
